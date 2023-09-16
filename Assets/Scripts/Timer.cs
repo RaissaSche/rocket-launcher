@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Timer : MonoBehaviour {
 
     public static event Action TimerEnded;
+    public Text currentTime;
     [SerializeField] private float timer = 5.0f;
     private bool _timeHasEnded;
 
@@ -19,6 +21,7 @@ public class Timer : MonoBehaviour {
 
         if (timer > 0) {
             timer -= Time.deltaTime;
+            currentTime.text = "Timer: " + timer;
         }
 
         if (!(timer <= 0)) {
