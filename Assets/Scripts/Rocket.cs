@@ -2,34 +2,37 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Rocket : MonoBehaviour {
-    public float thrust = 10f, drag = 10f;
+    public float thrust = 10f, drag = 10f, parachuteDrag = 15f, parachuteAngularDrag = 5f;
     public Text currentVelocity, currentPosition;
-    private Rigidbody _firstCompartment, _secondCompartment;
-    private MeshRenderer _parachute;
-    private bool _addForceDirection, _isParachuteOpen;
+    private Rigidbody _firstCompartment, _secondCompartment, _parachute;
+    private bool _addForce, _isParachuteOpen;
 
     private void Start() {
         _firstCompartment = transform.Find("PrimeiroEstagio").GetComponent<Rigidbody>();
         _secondCompartment = transform.Find("Corpo_Nariz").GetComponent<Rigidbody>();
-        _parachute = transform.Find("Paraquedas").GetComponent<MeshRenderer>();
-        _addForceDirection = true;
+        _parachute = transform.Find("Paraquedas").GetComponent<Rigidbody>();
+        
+        _addForce = true;
         _isParachuteOpen = false;
+        
+        _parachute.drag = 0;
+        _parachute.angularDrag = 0;
+        
         Timer.TimerEnded += UpdateAddForceStatus;
-
-        Debug.Log(_secondCompartment);
     }
 
     private void FixedUpdate() {
-        if (_addForceDirection) {
+        if (_addForce) {
             _secondCompartment.AddForce(transform.up * thrust); // TODO: inclination
         }
 
-        if (_secondCompartment.velocity.y < 0) {
-            //opens parachute
+        if (_secondCompartment.velocity.y < 0) { //opens parachute
             if (_isParachuteOpen == false) {
+                _parachute.drag = parachuteDrag;
+                _parachute.angularDrag = parachuteAngularDrag;
                 Destroy(_secondCompartment.GetComponent<FixedJoint>());
                 _firstCompartment.drag = drag;
-                _parachute.enabled = true;
+                _parachute.GetComponent<MeshRenderer>().enabled = true;
                 Debug.Log("Open Parachute");
                 _isParachuteOpen = true;
             }
@@ -42,7 +45,7 @@ public class Rocket : MonoBehaviour {
     }
 
     private void UpdateAddForceStatus() {
-        _addForceDirection = false;
-        Debug.Log("Timer has ended, _addForceDirection == " + _addForceDirection);
+        _addForce = false;
+        Debug.Log("Timer has ended, _addForceDirection == " + _addForce);
     }
 }

@@ -15,6 +15,7 @@ public class Timer : MonoBehaviour {
 
     private void Update() {
         if (_timeHasEnded) {
+            currentTime.text = "Timer: " + 0;
             enabled = false;
             return;
         }
