@@ -65,8 +65,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrust: 20
   drag: 10
+  parachuteDrag: 15
+  parachuteAngularDrag: 5
+  audioVolume: 0.25
   currentVelocity: {fileID: 0}
   currentPosition: {fileID: 0}
+  audioSource: {fileID: 0}
+  smokeParticle: {fileID: 0}
+  fireParticle: {fileID: 0}
+  firstCompartment: {fileID: 0}
+  secondCompartment: {fileID: 0}
+  parachute: {fileID: 0}
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,7 +191,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100002}
   serializedVersion: 4
-  m_Mass: 5
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -355,7 +364,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100004}
   serializedVersion: 4
-  m_Mass: 5
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -383,8 +392,8 @@ FixedJoint:
   m_GameObject: {fileID: 100004}
   m_ConnectedBody: {fileID: 3808842964611273263}
   m_ConnectedArticulationBody: {fileID: 0}
-  m_BreakForce: 100
-  m_BreakTorque: 100
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
   m_EnableCollision: 0
   m_EnablePreprocessing: 1
   m_MassScale: 1

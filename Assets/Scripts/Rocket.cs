@@ -2,50 +2,62 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Rocket : MonoBehaviour {
-    public float thrust = 10f, drag = 10f, parachuteDrag = 15f, parachuteAngularDrag = 5f;
+    public float thrust = 10f, drag = 10f, parachuteDrag = 15f, parachuteAngularDrag = 5f, audioVolume = 0.25f;
     public Text currentVelocity, currentPosition;
-    private Rigidbody _firstCompartment, _secondCompartment, _parachute;
-    private bool _addForce, _isParachuteOpen;
+    public AudioSource audioSource;
+    [SerializeField] private ParticleSystem smokeParticle, fireParticle;
+    [SerializeField] private Rigidbody firstCompartment, secondCompartment, parachute;
+    private bool _addForce, _addTorque, _isParachuteOpen;
 
     private void Start() {
-        _firstCompartment = transform.Find("PrimeiroEstagio").GetComponent<Rigidbody>();
-        _secondCompartment = transform.Find("Corpo_Nariz").GetComponent<Rigidbody>();
-        _parachute = transform.Find("Paraquedas").GetComponent<Rigidbody>();
-        
-        _addForce = true;
+        parachute.drag = parachute.angularDrag = 0;
+        _addForce = _addTorque = true;
         _isParachuteOpen = false;
-        
-        _parachute.drag = 0;
-        _parachute.angularDrag = 0;
-        
-        Timer.TimerEnded += UpdateAddForceStatus;
+
+        audioSource.PlayOneShot(audioSource.clip, audioVolume);
+
+        Timer.TimerEnded += SignalToStopApplyingForce;
+        Timer.TimerHalf += AddBallisticMovement;
     }
 
     private void FixedUpdate() {
         if (_addForce) {
-            _secondCompartment.AddForce(transform.up * thrust); // TODO: inclination
+            secondCompartment.AddForce(transform.up * thrust);
+            secondCompartment.AddForce(transform.right); //wind-simulating extra lateral force
         }
 
-        if (_secondCompartment.velocity.y < 0) { //opens parachute
-            if (_isParachuteOpen == false) {
-                _parachute.drag = parachuteDrag;
-                _parachute.angularDrag = parachuteAngularDrag;
-                Destroy(_secondCompartment.GetComponent<FixedJoint>());
-                _firstCompartment.drag = drag;
-                _parachute.GetComponent<MeshRenderer>().enabled = true;
-                Debug.Log("Open Parachute");
-                _isParachuteOpen = true;
-            }
-        }
+        if (!(secondCompartment.velocity.y < 0)) return;
+        if (_isParachuteOpen) return;
+
+        OpenParachute(); //only opens if it's velocity is zero or below and if the parachute hasn't been opened yet
     }
 
     private void Update() {
-        currentVelocity.text = "Velocidade: " + _firstCompartment.velocity.magnitude;
-        currentPosition.text = "Posição: " + _firstCompartment.transform.position;
+        currentVelocity.text = "Velocidade: " + firstCompartment.velocity.magnitude;
+        currentPosition.text = "Posição: " + firstCompartment.transform.position;
     }
 
-    private void UpdateAddForceStatus() {
+    private void SignalToStopApplyingForce() {
         _addForce = false;
-        Debug.Log("Timer has ended, _addForceDirection == " + _addForce);
+    }
+
+    private void OpenParachute() {
+        parachute.drag = parachuteDrag;
+        parachute.angularDrag = parachuteAngularDrag;
+        firstCompartment.drag = drag;
+
+        Destroy(secondCompartment.GetComponent<FixedJoint>());
+        smokeParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
+        parachute.GetComponent<MeshRenderer>().enabled = true;
+        _isParachuteOpen = true;
+    }
+
+    private void AddBallisticMovement() {
+        if (!_addTorque) return;
+        secondCompartment.AddTorque(transform.up * 10000);
+        _addTorque = false;
+        Debug.Log("Add Torque");
     }
 }
