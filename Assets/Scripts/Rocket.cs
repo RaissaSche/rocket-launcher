@@ -7,11 +7,19 @@ public class Rocket : MonoBehaviour {
     public AudioSource audioSource;
     [SerializeField] private ParticleSystem smokeParticle, fireParticle;
     [SerializeField] private Rigidbody firstCompartment, secondCompartment, parachute;
-    private bool _addForce, _addTorque, _isParachuteOpen;
+    private bool _engineOn, _ballisticMovement, _isParachuteOpen;
+    private Vector3 _forceTarget;
+
+
+    private void Awake() {
+        smokeParticle.Play();
+        fireParticle.Play();
+    }
 
     private void Start() {
-        parachute.drag = parachute.angularDrag = 0;
-        _addForce = _addTorque = true;
+        parachute.drag = 0.5f;
+        parachute.angularDrag = 0;
+        _engineOn = _ballisticMovement = true;
         _isParachuteOpen = false;
 
         audioSource.PlayOneShot(audioSource.clip, audioVolume);
@@ -21,9 +29,12 @@ public class Rocket : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        if (_addForce) {
+        SimulateWind();
+
+        if (_engineOn) {
             secondCompartment.AddForce(transform.up * thrust);
-            secondCompartment.AddForce(transform.right); //wind-simulating extra lateral force
+            secondCompartment.AddTorque(new Vector3(0, 0, -1));
+            _ballisticMovement = false;
         }
 
         if (!(secondCompartment.velocity.y < 0)) return;
@@ -33,12 +44,22 @@ public class Rocket : MonoBehaviour {
     }
 
     private void Update() {
-        currentVelocity.text = "Velocidade: " + firstCompartment.velocity.magnitude;
+        currentVelocity.text = "Velocidade: " + firstCompartment.velocity;
         currentPosition.text = "Posição: " + firstCompartment.transform.position;
     }
 
     private void SignalToStopApplyingForce() {
-        _addForce = false;
+        _engineOn = false;
+        smokeParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+    }
+
+    //wind-simulating extra lateral force
+    private void SimulateWind() {
+        Vector3 wind = new Vector3(1, 0, 0);
+        firstCompartment.AddForce(wind);
+        secondCompartment.AddForce(wind);
+        parachute.AddForce(wind);
     }
 
     private void OpenParachute() {
@@ -47,17 +68,19 @@ public class Rocket : MonoBehaviour {
         firstCompartment.drag = drag;
 
         Destroy(secondCompartment.GetComponent<FixedJoint>());
-        smokeParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        fireParticle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-
         parachute.GetComponent<MeshRenderer>().enabled = true;
         _isParachuteOpen = true;
     }
 
-    private void AddBallisticMovement() {
-        if (!_addTorque) return;
-        secondCompartment.AddTorque(transform.up * 10000);
-        _addTorque = false;
-        Debug.Log("Add Torque");
+    public void AddBallisticMovement() {
+        //if (!_ballisticMovement) return;
+         /*_forceTarget = Quaternion.Euler(0, 2, 0) * transform.up;
+        _ballisticMovement = true;*/
+        //Debug.Log("Add Torque");
+    }
+
+    public void Reset() {
+        Timer.TimerEnded -= SignalToStopApplyingForce;
+        //Timer.TimerHalf -= AddBallisticMovement;
     }
 }

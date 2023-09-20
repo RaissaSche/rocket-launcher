@@ -9,10 +9,6 @@ public class Timer : MonoBehaviour {
     [SerializeField] private float timer = 5.0f;
     private bool _timeHasEnded;
 
-    private void Start() {
-        _timeHasEnded = false;
-    }
-
     private void Update() {
         if (_timeHasEnded) {
             currentTime.text = "Timer: " + 0;

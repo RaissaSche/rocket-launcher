@@ -520,8 +520,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 167042616956808533, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 167042616956808533, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
       propertyPath: m_Mass
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 167042616956808533, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 167042616956808533, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 846034419566918207, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 846034419566918207, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 1241692423743614350, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
       propertyPath: m_Material
@@ -560,6 +580,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1635764154}
     - target: {fileID: 1751439164733484960, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: parachuteDrag
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1751439164733484960, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
       propertyPath: smokeParticle
       value: 
       objectReference: {fileID: 1071703296}
@@ -592,8 +616,16 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3808842964611273263, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_Drag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3808842964611273263, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
       propertyPath: m_Mass
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3808842964611273263, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 9210788469025787559, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
       propertyPath: m_Mass
@@ -5869,7 +5901,7 @@ Canvas:
   m_GameObject: {fileID: 1150530570}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 1
   m_PixelPerfect: 0
@@ -11119,6 +11151,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1937103535}
+        m_TargetAssemblyTypeName: Rocket, Assembly-CSharp
+        m_MethodName: Reset
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 813516760}
         m_TargetAssemblyTypeName: Manager, Assembly-CSharp
         m_MethodName: RestartScene
@@ -11174,6 +11218,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
   m_PrefabInstance: {fileID: 771581165}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1937103535 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1751439164733484960, guid: 2e1661d827038804bbedb782887bfe01, type: 3}
+  m_PrefabInstance: {fileID: 771581165}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa0e849edc978c498be5db4b99d008f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1995881447
 GameObject:
   m_ObjectHideFlags: 0
